@@ -15,7 +15,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = ""
 if __name__ == '__main__':
 
     lists = []
-    f = open('../list_cameo_hard61')
+    f = open('./examples/list_fold')
     for i in f.readlines():
         lists.append(i.strip())
     f.close()    
@@ -43,7 +43,7 @@ if __name__ == '__main__':
 
         output_path = "./predictions/" + filename + "_fold3.pdb"
         
-        fasta_path = os.path.join("../cons/native", filename + ".fasta")
+        fasta_path = os.path.join("./examples/fold", filename + ".fasta")
         rama_cons = Rama.readRama("./lib/ramachandran.txt")
 
         params = {}
@@ -52,19 +52,18 @@ if __name__ == '__main__':
         params["output_path"] = output_path  
         
         # backbone folding params
-        mctrr_cons_path = os.path.join("../cons/true", filename + ".labels2.npz") # backbone trrosetta-like constrains file
-        # mctrr_cons_path = os.path.join("../cons/pred", filename + ".contact.npz") # backbone trrosetta-like constrains file
+        mctrr_cons_path = os.path.join("./examples/fold", filename + ".labels.npz") # backbone trrosetta-like constrains file
         params["mctrr_cons_path"] = mctrr_cons_path        
       
         params["from_pdb"] = from_pdb
         params["from_tass"] = from_tass
         
         if params["from_pdb"]: 
-            params["pdb_path"] = os.path.join("../cons/native", filename + ".pdb")
+            params["pdb_path"] = os.path.join("./examples/fold", filename + ".pdb")
             print ("Read:", params["pdb_path"])
             
         if params["from_tass"]: 
-            params["tass_path"] = os.path.join("../cons/pred", filename + ".tass2")
+            params["tass_path"] = os.path.join("./examples/fold", filename + ".tass2")
             print ("Read:", params["tass_path"])
             
         multi_iters.append(params)

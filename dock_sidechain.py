@@ -23,7 +23,7 @@ if __name__ == '__main__':
     """
     
     lists = []
-    f = open('../list_dock_cameo75')
+    f = open('./examples/list_dock2')
     for i in f.readlines():
         lists.append(i.strip())
     f.close()    
@@ -32,7 +32,7 @@ if __name__ == '__main__':
     # For oligomer targets, fold_sidechain.py can be used for 
     # their side chains modeling process with fixed backbone,
     # just combine them and consider it as a single protein
-    model = 2
+    model = 1
     if model == 0:
         # two proteins side chains docking process with flexible backbone at last optimaziton round, and the results from OPUS-RontaNN2 (or others) as initial x1x2x3x4
         # require protein_A & protein_B .pdb file / predicted .rotann2 file / backbone & side chains trrosetta-like constrains file (between two proteins & inside each protein)
@@ -60,10 +60,10 @@ if __name__ == '__main__':
         
         print (pdb_name_a, chains_a, pdb_name_b, chains_b)
 
-        output_path = "./predictions/" + pdb_name_a + "_fold3.pdb"
+        output_path = "./predictions4/" + pdb_name_a + "_fold3.pdb"
 
-        fasta_a_path = os.path.join("../cons/native_dock2", pdb_name_a + "_a.fasta")
-        fasta_b_path = os.path.join("../cons/native_dock2", pdb_name_b + "_b.fasta")
+        fasta_a_path = os.path.join("./examples/dock", pdb_name_a + "_a.fasta")
+        fasta_b_path = os.path.join("./examples/dock", pdb_name_b + "_b.fasta")
         rama_cons = Rama.readRama("./lib/ramachandran.txt")
 
         params = {}
@@ -77,12 +77,12 @@ if __name__ == '__main__':
 
         # backbone docking params
         # here, pdb_a and pdb_b use a combined cons file for demonstration
-        params["mctrr_cons_path"] = os.path.join("../cons/true_dock2", pdb_name_a + ".labels2.npz")
+        params["mctrr_cons_path"] = os.path.join("./examples/dock", pdb_name_a + ".labels.npz")
         print ("Read:", params["mctrr_cons_path"])
             
         # side chains docking params
         # here, pdb_a and pdb_b use a combined cons file for demonstration
-        scx1trr_cons_path = os.path.join("../cons/true_dock_sc2", pdb_name_a + ".x1_labels2.npz") # side chains trrosetta-like constrains file
+        scx1trr_cons_path = os.path.join("./examples/dock", pdb_name_a + ".x1_labels.npz") # side chains trrosetta-like constrains file
         params["scx1trr_cons_path"] = scx1trr_cons_path  
         
         scx2trr_cons_path = None
@@ -90,13 +90,13 @@ if __name__ == '__main__':
         scx4trr_cons_path = None
         
         # ===optional for optimize x2, x3, x4===
-        scx2trr_cons_path = os.path.join("../cons/true_dock_sc2", pdb_name_a + ".x2_labels2.npz") # side chains trrosetta-like constrains file
+        scx2trr_cons_path = os.path.join("./examples/dock", pdb_name_a + ".x2_labels.npz") # side chains trrosetta-like constrains file
         params["scx2trr_cons_path"] = scx2trr_cons_path  
 
-        scx3trr_cons_path = os.path.join("../cons/true_dock_sc2", pdb_name_a + ".x3_labels2.npz") # side chains trrosetta-like constrains file
+        scx3trr_cons_path = os.path.join("./examples/dock", pdb_name_a + ".x3_labels.npz") # side chains trrosetta-like constrains file
         params["scx3trr_cons_path"] = scx3trr_cons_path  
 
-        scx4trr_cons_path = os.path.join("../cons/true_dock_sc2", pdb_name_a + ".x4_labels2.npz") # side chains trrosetta-like constrains file
+        scx4trr_cons_path = os.path.join("./examples/dock", pdb_name_a + ".x4_labels.npz") # side chains trrosetta-like constrains file
         params["scx4trr_cons_path"] = scx4trr_cons_path  
         # ===optional for optimize x2, x3, x4===
 
@@ -104,13 +104,13 @@ if __name__ == '__main__':
         params["from_rotann"] = from_rotann
         
         if params["from_pdb"]: 
-            params["pdb_a_path"] = os.path.join("../cons/native_dock2", pdb_name_a + ".pdb")
-            params["pdb_b_path"] = os.path.join("../cons/native_dock2", pdb_name_b + ".pdb")
+            params["pdb_a_path"] = os.path.join("./examples/dock", pdb_name_a + ".pdb")
+            params["pdb_b_path"] = os.path.join("./examples/dock", pdb_name_b + ".pdb")
             print ("Read:", params["pdb_a_path"], params["pdb_b_path"])
              
         if params["from_rotann"]: 
             # here, pdb_a and pdb_b use a combined cons file for demonstration
-            params["rotann_path"] = os.path.join("../cons/native_dock2", pdb_name_a + ".dihedrals")
+            params["rotann_path"] = os.path.join("./examples/dock", pdb_name_a + ".rotann2")
             print ("Read:", params["rotann_path"])
 
         multi_iters.append(params)

@@ -15,7 +15,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = ""
 if __name__ == '__main__':
 
     lists = []
-    f = open('../list_cameo_hard61')
+    f = open('./examples/list_fold')
     for i in f.readlines():
         lists.append(i.strip())
     f.close()    
@@ -50,9 +50,9 @@ if __name__ == '__main__':
     multi_iters = []
     for filename in lists:
         
-        output_path = "./predictions/" + filename + "_fold3.pdb"
+        output_path = "./predictions2/" + filename + "_fold3.pdb"
         
-        fasta_path = os.path.join("../cons/native", filename + ".fasta")
+        fasta_path = os.path.join("./examples/fold", filename + ".fasta")
         rama_cons = Rama.readRama("./lib/ramachandran.txt")
         
         params = {}
@@ -61,8 +61,7 @@ if __name__ == '__main__':
         params["output_path"] = output_path  
 
         # side chains folding params
-        scx1trr_cons_path = os.path.join("../cons/true_sc", filename + ".x1_labels2.npz") # side chains trrosetta-like constrains file
-        # scx1trr_cons_path = os.path.join("../cons/pred_sc", filename + ".rotacm.npz") # side chains trrosetta-like constrains file
+        scx1trr_cons_path = os.path.join("./examples/fold", filename + ".x1_labels.npz") # side chains trrosetta-like constrains file
         params["scx1trr_cons_path"] = scx1trr_cons_path  
         
         scx2trr_cons_path = None
@@ -70,13 +69,13 @@ if __name__ == '__main__':
         scx4trr_cons_path = None
         
         # ===optional for optimize x2, x3, x4===
-        scx2trr_cons_path = os.path.join("../cons/true_sc", filename + ".x2_labels2.npz") # side chains trrosetta-like constrains file
+        scx2trr_cons_path = os.path.join("./examples/fold", filename + ".x2_labels.npz") # side chains trrosetta-like constrains file
         params["scx2trr_cons_path"] = scx2trr_cons_path  
 
-        scx3trr_cons_path = os.path.join("../cons/true_sc", filename + ".x3_labels2.npz") # side chains trrosetta-like constrains file
+        scx3trr_cons_path = os.path.join("./examples/fold", filename + ".x3_labels.npz") # side chains trrosetta-like constrains file
         params["scx3trr_cons_path"] = scx3trr_cons_path  
 
-        scx4trr_cons_path = os.path.join("../cons/true_sc", filename + ".x4_labels2.npz") # side chains trrosetta-like constrains file
+        scx4trr_cons_path = os.path.join("./examples/fold", filename + ".x4_labels.npz") # side chains trrosetta-like constrains file
         params["scx4trr_cons_path"] = scx4trr_cons_path  
         # ===optional for optimize x2, x3, x4===
         
@@ -85,15 +84,15 @@ if __name__ == '__main__':
         params["from_rotann"] = from_rotann
         
         if params["from_pdb"]: 
-            params["pdb_path"] = os.path.join("../cons/native", filename + ".pdb")
+            params["pdb_path"] = os.path.join("./examples/fold", filename + ".pdb")
             print ("Read:", params["pdb_path"])
              
         if params["from_rotann"]: 
-            params["rotann_path"] = os.path.join("../cons/pred_sc", filename + ".rotann2")
+            params["rotann_path"] = os.path.join("./examples/fold", filename + ".rotann2")
             print ("Read:", params["rotann_path"])
 
         if not params["fixed_backbone"]: 
-            params["mctrr_cons_path"] = os.path.join("../cons/true", filename + ".labels2.npz")
+            params["mctrr_cons_path"] = os.path.join("./examples/fold", filename + ".labels.npz")
             print ("Read:", params["mctrr_cons_path"])
             
         multi_iters.append(params)

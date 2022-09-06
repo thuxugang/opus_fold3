@@ -23,12 +23,12 @@ if __name__ == '__main__':
     """
     
     lists = []
-    f = open('../list_dock_cameo75')
+    f = open('./examples/list_dock2')
     for i in f.readlines():
         lists.append(i.strip())
     f.close()    
 
-    model = 0
+    model = 2
     
     if model == 0:
         # two proteins backbone docking process with fixed backbone
@@ -57,10 +57,10 @@ if __name__ == '__main__':
         
         print (pdb_name_a, chains_a, pdb_name_b, chains_b)
 
-        output_path = "./predictions/" + pdb_name_a + "_fold3.pdb"
+        output_path = "./predictions3/" + pdb_name_a + "_fold3.pdb"
 
-        fasta_a_path = os.path.join("../cons/native_dock2", pdb_name_a + "_a.fasta")
-        fasta_b_path = os.path.join("../cons/native_dock2", pdb_name_b + "_b.fasta")
+        fasta_a_path = os.path.join("./examples/dock", pdb_name_a + "_a.fasta")
+        fasta_b_path = os.path.join("./examples/dock", pdb_name_b + "_b.fasta")
         rama_cons = Rama.readRama("./lib/ramachandran.txt")
 
         params = {}
@@ -74,17 +74,17 @@ if __name__ == '__main__':
 
         # backbone docking params 
         # here, pdb_a and pdb_b use a combined cons file for demonstration
-        mctrr_cons_path = os.path.join("../cons/true_dock2", pdb_name_a + ".labels2.npz") # backbone trrosetta-like constrains file
+        mctrr_cons_path = os.path.join("./examples/dock", pdb_name_a + ".labels.npz") # backbone trrosetta-like constrains file
         params["mctrr_cons_path"] = mctrr_cons_path  
 
         params["from_pdb"] = from_pdb
         params["fixed_backbone"] = fixed_backbone
         
         if params["from_pdb"]:
-            pdb_a_path = os.path.join("../cons/native_dock2", pdb_name_a + ".pdb")
+            pdb_a_path = os.path.join("./examples/dock", pdb_name_a + ".pdb")
             params["pdb_a_path"] = pdb_a_path
             
-            pdb_b_path = os.path.join("../cons/native_dock2", pdb_name_b + ".pdb")
+            pdb_b_path = os.path.join("./examples/dock", pdb_name_b + ".pdb")
             params["pdb_b_path"] = pdb_b_path
             
             print ("Read:", params["pdb_a_path"], params["pdb_b_path"])
