@@ -94,8 +94,7 @@ def readPDB(filename, chains=None):
     f = open(filename,'r')
     atomsDatas = []
     for line in f.readlines():   
-        line = line.strip()
-        if (line == "" or line[:3] == "TER"):
+        if (line.strip() == "" or line[:3] == "TER"):
             break
         else:
             if (line[:4] == 'ATOM' or line[:6] == 'HETATM'):
@@ -114,10 +113,20 @@ def readPDB(filename, chains=None):
                 y = line[38:46].strip()
                 z = line[46:54].strip()
                 
+                try:
+                    occ = float(line[54:60].strip())
+                    bfactor = float(line[60:66].strip())
+                    name2 = line[77:80].strip()
+                except:
+                    occ = 1.0
+                    bfactor = 100.0
+                    name2 = ""
+                
                 if chains == None or chainid in chains:
                     if(name1[0] in ["N","O","C","S"]):
                         position = np.array([float(x), float(y), float(z)], dtype=np.float32)
-                        atom = Atoms.Atom(atomid, name1, resname, resid, position, chainid)
+                        atom = Atoms.Atom(atomid, name1, resname, resid, position, chainid,
+                                          occ=occ, bfactor=bfactor, name2=name2)
                         atomsDatas.append(atom)
     f.close()
     return atomsDatas
@@ -181,6 +190,23 @@ def outputPDB(residuesData, atoms_matrix, pdb_path):
             z = format(atoms_matrix[counter][2],".3f")        
             z_len = len(list(z))
             string = string + " "*(8-z_len) + z  
+
+            try:
+                occ = residue.atoms["N"].occ      
+            except:
+                occ = 1.0
+            try:
+                bfactor = residue.atoms["N"].bfactor
+            except:
+                bfactor = 100.0
+                
+            occ = format(occ,".2f")        
+            occ_len = len(list(occ))
+            string = string + " "*(6-occ_len) + occ  
+            bfactor = format(bfactor,".2f")        
+            bfactor_len = len(list(bfactor))
+            string = string + " "*(6-bfactor_len) + bfactor  
+            string = string + " "*11 + name1[0] 
             
             string_list = list(string)
             string_list[21] = residue.chainid
@@ -235,6 +261,23 @@ def outputPDBALL(residuesData, atoms_matrix, atoms_matrix_name, pdb_path):
             z = format(atoms_matrix[counter][2],".3f")        
             z_len = len(list(z))
             string = string + " "*(8-z_len) + z  
+
+            try:
+                occ = residue.atoms["N"].occ      
+            except:
+                occ = 1.0
+            try:
+                bfactor = residue.atoms["N"].bfactor
+            except:
+                bfactor = 100.0
+                
+            occ = format(occ,".2f")        
+            occ_len = len(list(occ))
+            string = string + " "*(6-occ_len) + occ  
+            bfactor = format(bfactor,".2f")        
+            bfactor_len = len(list(bfactor))
+            string = string + " "*(6-bfactor_len) + bfactor  
+            string = string + " "*11 + name1[0] 
             
             string_list = list(string)
             string_list[21] = residue.chainid

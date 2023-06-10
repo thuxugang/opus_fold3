@@ -145,20 +145,26 @@ def calculateCoordinates_batch(c1, c2, c3, L, ang, di):
     return tf.cast(cc, tf.float32)
 
 geo_ala = Geometry.geometry('A')
-def get_mainchain(idx, torsions, atoms_matrix, residue, geo):
+def get_mainchain(idx, torsions, atoms_matrix, residue, geo, set_first=False):
 
     if idx == 0:
-        N = np.array([geo.CA_N_length*np.cos(geo.N_CA_C_angle*(np.pi/180.0)),
-                      geo.CA_N_length*np.sin(geo.N_CA_C_angle*(np.pi/180.0)),
-                      0], dtype=np.float32)
-        CA = np.array([0,0,0], dtype=np.float32)
-        C = np.array([geo.CA_C_length,0,0], dtype=np.float32)
+        if set_first:
+            N = residue.atoms["N"].position
+            CA = residue.atoms["CA"].position
+            C = residue.atoms["C"].position
+        else:
+            N = np.array([geo.CA_N_length*np.cos(geo.N_CA_C_angle*(np.pi/180.0)),
+                          geo.CA_N_length*np.sin(geo.N_CA_C_angle*(np.pi/180.0)),
+                          0], dtype=np.float32)
+            CA = np.array([0,0,0], dtype=np.float32)
+            C = np.array([geo.CA_C_length,0,0], dtype=np.float32)
     else:
         _N, _CA, _C = atoms_matrix
         
         N = calculateCoordinates(_N, _CA, _C, geo.peptide_bond, geo.CA_C_N_angle, torsions[1])
         CA = calculateCoordinates(_CA, _C, N, geo.CA_N_length, geo.C_N_CA_angle, torsions[2])
         C = calculateCoordinates(_C, N, CA, geo.CA_C_length, geo.N_CA_C_angle, torsions[0])
+        geo.N_CA_C_O_diangle = torsions[3] - 180.0
         
     O = calculateCoordinates(N, CA, C, geo.C_O_length, geo.CA_C_O_angle, geo.N_CA_C_O_diangle)
     

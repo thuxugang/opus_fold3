@@ -115,7 +115,7 @@ def initTorsionFromGeo(geosData):
 
     return init_torsions
 
-def rebuild_main_chain(torsions, geosData, residuesData):
+def rebuild_main_chain(torsions, geosData, residuesData, set_first=False):
 
     atoms_matrix = []
     count = 0
@@ -124,11 +124,11 @@ def rebuild_main_chain(torsions, geosData, residuesData):
     for idx in range(length):
         
         if idx == 0:
-            atoms_matrix.extend(PeptideBuilder.get_mainchain(idx, None, None, residuesData[idx], geosData[idx]))
+            atoms_matrix.extend(PeptideBuilder.get_mainchain(idx, None, None, residuesData[idx], geosData[idx], set_first=set_first))
                         
         else:
-            # phi, psi, omega
-            torsion = [torsions[count], torsions[count-2], torsions[count+2]]
+            # phi, psi, omega, psi_
+            torsion = [torsions[count], torsions[count-2], torsions[count+2], torsions[count+1]]
             atoms_matrix.extend(PeptideBuilder.get_mainchain(idx, torsion, 
                  atoms_matrix[residuesData[idx-1].main_chain_atoms_matrixid["N"]:residuesData[idx-1].main_chain_atoms_matrixid["C"]+1], residuesData[idx], geosData[idx]))
         count += 3
@@ -215,6 +215,27 @@ def rebuild_side_chain_parallel(rotamers, geosData, residuesData, atoms_matrix_o
     assert atoms_matrix.shape == (length*Residues.NUM_MAX_ATOMS, 3)     
     
     return atoms_matrix
+
+def make_atoms_mask(residuesData):
+    
+    length = len(residuesData)
+    
+    atoms_mask = []
+    for residue in residuesData:
+        
+        for _ in range(residue.num_atoms):
+            atoms_mask.append(1)
+        if residue.resname == "G":
+            num_pad = residue.num_pad_side_atoms + 1
+        else:
+            num_pad = residue.num_pad_side_atoms
+        for _ in range(num_pad):
+            atoms_mask.append(0)
+            
+    atoms_mask = tf.reshape(atoms_mask, (length*Residues.NUM_MAX_ATOMS,))
+    assert atoms_mask.shape == (length*Residues.NUM_MAX_ATOMS,)     
+    
+    return atoms_mask
 
 def sixd_to_rot(x, use_bias=False):
     # x (6,)
