@@ -128,3 +128,13 @@ def cal_LJPotential(LJ_matrixs, atoms_matrix):
     
     return lj_potential / (case1.shape[0] + case2.shape[0] + case3.shape[0] + 1e-6)
 ```
+
+## Reference 
+```bibtex
+@article{xu2023opus1,
+  title={OPUS-Fold3: a gradient-based protein all-atom folding and docking framework on TensorFlow},
+  author={Xu, Gang and Luo, Zhenwei and Zhou, Ruhong and Wang, Qinghua and Ma, Jianpeng},
+  journal={Briefings in Bioinformatics},
+  year={2023},
+  publisher={Oxford University Press}
+}
